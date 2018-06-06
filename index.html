@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1,user-scaleable=no">
+	<title>华广毕业生四年饭堂消费统计</title>
+	<link rel="stylesheet"  href="css/style.css">
+	<link rel="stylesheet"  href="css/jquery.mobile-1.4.5.css">
+	<script src="js/jquery.js"></script>
+	<script src="js/jquery.mobile-1.4.5.js"></script>
+</head>
+<body>
+
+<div data-role="page" id="pageone">
+  <div data-role="content" data-transition="flow">
+       <form method="post">
+          <input type="text" name="stunum" id="stunum" placeholder="输入你的学号">
+          <input type="button" name="fbtn" id="fbtn" value="提交" data-inline="true">
+       </form>
+  </div>
+</div>
+
+
+<div data-role="page" id="pagetwo">
+  <div data-role="content" data-transition="flow">
+      <img src="image/arrow_right.png" class="right">
+      <div class="position1">
+      </div>
+  </div>
+</div>
+
+<div data-role="page" id="pagethree">
+  <div data-role="content" data-transition="flow">
+      <img src="image/arrow_left.png" class="left">
+      <img src="image/arrow_right.png" class="right">
+      <div class="position2">
+      </div>
+  </div>
+</div>
+
+<div data-role="page" id="pagefour">
+  <div data-role="content" data-transition="flow">
+    <img src="image/arrow_left.png" class="left">
+    <img src="image/arrow_right.png" class="right">
+    <div class="position3">
+    </div>
+    <div class="position4">
+    </div>
+  </div>
+</div>
+
+<div data-role="page" id="pagefive">
+  <div data-role="content" data-transition="flow">
+    <img src="image/arrow_left.png" class="left">
+    <img src="image/arrow_right.png" class="right">
+    <div class="position5">
+    </div>
+  </div>
+</div>
+
+<div data-role="page" id="pagesix">
+  <div data-role="content" data-transition="flow">
+    <img src="image/arrow_left.png" class="left">
+    <div class="position6"></div>
+    <div class="position7"></div>
+    <div class="position8"></div>
+  </div>
+</div>
+
+</body>
+<script>
+// 获取当前窗口大小
+// var width=$(window).width();
+// var height=$(window).height();
+
+
+//将页面重定向到登陆界面
+var url=window.location.href;
+  if (url.indexOf("#")!=-1) {
+        window.location.href=" ";
+  }
+
+
+
+// 判断登陆
+  $("#fbtn").click(function(){ 
+    // alert('s');
+    $.ajax({ 
+      type: "POST",   
+      url: "search1.php",
+      data: {
+        stunum: $("#stunum").val(), 
+      },
+      dataType: "json",
+      success: function(da) {
+        var c=da.Data;
+        // console.log(c);
+        // alert(da.Data,ranker);
+        if(da.Message=="查无此人")
+          // $("#putout").html("<span>查无此人</span>");
+          alert("查无此人");
+        else{
+          window.location.href="#pagetwo";
+          $(".position1").html("<p>"+c.daynum+"</p>");
+          $(".position2").html("<p>"+(c.amount/c.daynum).toFixed(0)+"</p>");
+          $(".position3").html("<p>"+c.daymax+"</p>");
+          $(".position4").html("<p>"+c.daymin+"</p>");
+          $(".position5").html("<p>"+c.amount+"</p>");
+          $(".position6").html("<p>"+c.stuname+"的消费总金额在华广排名为:"+"</p>"+"<span>"+c.number+"</span>");
+          $(".position7").html("<p>"+"恭喜你击败了"+"</br>"+"<span>"+((1-c.number/4500)*100).toFixed(2)+"%</span>"+"</br>"+"的华广学子"+"</p>");
+          $(".position8").html("<p>"+"©星空学生创新中心"+"</p>");
+        }
+      },
+      error: function(jqXHR){   
+         alert("发生错误：" + jqXHR.status);
+      },     
+    })
+  });
+
+
+
+
+//页面跳转
+    $(document).on("pageinit","#pagetwo",function(){  
+      $("#pagetwo").on("swipeleft",function(){
+        window.location.href="#pagethree";
+      });                      
+    });
+
+    $(document).on("pageinit","#pagethree",function(){
+      $("#pagethree").on("swiperight",function(){
+        window.location.href="#pagetwo";
+      });  
+      $("#pagethree").on("swipeleft",function(){
+        window.location.href="#pagefour";
+      });                       
+    });
+
+    $(document).on("pageinit","#pagefour",function(){
+      $("#pagefour").on("swiperight",function(){
+        window.location.href="#pagethree";
+      });  
+      $("#pagefour").on("swipeleft",function(){
+        window.location.href="#pagefive";
+      });                       
+    });
+
+    $(document).on("pageinit","#pagefive",function(){
+      $("#pagefive").on("swiperight",function(){
+        window.location.href="#pagefour";
+      });     
+      $("#pagefive").on("swipeleft",function(){
+        window.location.href="#pagesix";
+      });                 
+    });
+
+    $(document).on("pageinit","#pagesix",function(){
+      $("#pagesix").on("swiperight",function(){
+        window.location.href="#pagefive";
+      }); 
+    });
+
+//阻止默认滑屏
+    if(true){
+      document.body.style.msTouchAction="none";
+    }
+    else {
+      document.ontouchmove=function(e){
+        e.preventDefault();
+      }
+    }
+
+
+// 交互
+  
+$(document).on("pageshow","#pagesix",function(){ // 当进入页面六时
+    $(".position7").delay(1200).animate({
+      top:"60%",
+      opacity:1,
+    },500)
+});
+
+
+
+
+</script>
+</html>
